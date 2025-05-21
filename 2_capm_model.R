@@ -12,7 +12,7 @@ head(df)
 normalize_prices <- function(df) {
   df_norm <- df
   for (col in names(df)[-1]) {
-    first_value <- df[[col]][which(!is.na(df[[col]]))[1]]  # 第一个非NA值
+    first_value <- df[[col]][which(!is.na(df[[col]]))[1]]  
     df_norm[[col]] <- df[[col]] / first_value
   }
   return(df_norm)
@@ -65,10 +65,9 @@ df$Ri
 head(df$Rm)
 
 # Plot a scatter plot between the selected stock (Ri) and the market (Rm)
-library(ggplot2)
 
 ggplot(df, aes(x = Rm, y = Ri)) +
-  geom_point(color = "green") +
+  geom_point(color = "darkgreen") +
   labs(
     title = "Scatter Plot: Stock vs Market Returns",
     x = "Market Return (S&P 500)",
@@ -87,9 +86,40 @@ beta <- coef(model)[["Rm_pct"]]
 alpha <- coef(model)[["(Intercept)"]]
 cat("Beta for AAPL stock is =", round(beta, 3), "and alpha is =", round(alpha, 3), "\n")
 
+# Scatter plot with fitted regression line: y = beta * x + alpha
+ggplot(df, aes(x = Rm_pct, y = Ri_pct)) +
+  geom_point(color = "blue") +  # Scatter points
+  geom_abline(intercept = alpha, slope = beta, linetype = "dashed", color = "red") +  # Regression line
+  labs(
+    title = "Scatter Plot: AAPL vs S&P500 Returns",
+    x = "Market Return (S&P 500, %)",
+    y = "AAPL Return (%)"
+  ) +
+  theme_minimal()
+
+
+# Fit a linear model: TSLA return ~ S&P500 return
+df$TSLA_pct <- df$TSLA * 100
+df$Rm_pct <- df$Rm * 100
+
+# Run linear regression using percentage returns
+model <- lm(TSLA_pct ~ Rm_pct, data = df)
+beta <- coef(model)[["Rm_pct"]]
+alpha <- coef(model)[["(Intercept)"]]
+# Print result
+cat("Beta for TSLA stock is =", round(beta, 3), "and alpha is =", round(alpha, 3), "\n")
 
 
 
+# Plot with regression line
+ggplot(df, aes(x = Rm_pct, y = TSLA_pct)) +
+  geom_point(color = "blue") +
+  geom_abline(intercept = alpha, slope = beta, color = "green") +
+  labs(
+    title = "Scatter Plot: TSLA vs S&P500 Returns",
+    x = "S&P500 Return (%)",
+    y = "TSLA Return (%)"
+  ) +
 
 
 
