@@ -1,0 +1,95 @@
+
+library(plotly)
+library(tidyverse)
+library(dygraphs)
+library(ggplot2)
+library(readr)
+df <- read_csv("C:/Users/MI/Desktop/RR Project/data/cleaned_data.csv")
+
+
+head(df)
+# Function to normalize prices based on the initial (first) value
+normalize_prices <- function(df) {
+  df_norm <- df
+  for (col in names(df)[-1]) {
+    first_value <- df[[col]][which(!is.na(df[[col]]))[1]]  # 第一个非NA值
+    df_norm[[col]] <- df[[col]] / first_value
+  }
+  return(df_norm)
+}
+
+# Step 1: Convert Date column to Date format
+df$Date <- as.Date(df$Date)
+
+# Step 2: Select only the stock returns (exclude Ri and Rm for now)
+returns_df <- df %>%
+  select(Date, BA, T, MGM, AMZN, IBM, TSLA, GOOG, Ri, Rm)
+
+# Step 3: Convert daily returns into cumulative index (starting from 100)
+cumulative_df <- returns_df
+cumulative_df[,-1] <- apply(returns_df[,-1], 2, function(x) cumprod(1 + x) * 100)
+
+# Step 4: Plot interactive line chart
+interactive_plot <- function(df, title) {
+  fig <- plot_ly()
+  
+  for (col_name in colnames(df)[-1]) {
+    fig <- fig %>%
+      add_trace(x = df$Date,
+                y = df[[col_name]],
+                type = 'scatter',
+                mode = 'lines',
+                name = col_name)
+  }
+  
+  fig <- fig %>%
+    layout(title = title,
+           xaxis = list(title = "Date"),
+           yaxis = list(title = "Index Value (Base = 100)"))
+  
+  return(fig)
+}
+# Step 5: Run the function to generate the chart
+interactive_plot(cumulative_df, "Stock Performance Indexed to 100")
+
+# Calculate average daily return using dplyr
+avg_daily_returns <- df %>%
+  select(-Date) %>%
+  summarise(across(everything(), ~ mean(.x, na.rm = TRUE)))
+
+print(avg_daily_returns)
+
+# Select any stock, let's say Apple(Ri)
+df$Ri
+# Select the market returns (Rm), e.g., S&P 500
+head(df$Rm)
+
+# Plot a scatter plot between the selected stock (Ri) and the market (Rm)
+library(ggplot2)
+
+ggplot(df, aes(x = Rm, y = Ri)) +
+  geom_point(color = "green") +
+  labs(
+    title = "Scatter Plot: Stock vs Market Returns",
+    x = "Market Return (S&P 500)",
+    y = "Stock Return (AAPL)"
+  ) +
+  theme_minimal()
+
+# Fit linear model: AAPL ~ sp500
+## Create new columns: convert daily returns to percentages (to match Python's result)）
+df$Ri_pct <- df$Ri * 100
+df$Rm_pct <- df$Rm * 100
+
+# Run linear regression using percentage returns
+model <- lm(Ri_pct ~ Rm_pct, data = df)
+beta <- coef(model)[["Rm_pct"]]
+alpha <- coef(model)[["(Intercept)"]]
+cat("Beta for AAPL stock is =", round(beta, 3), "and alpha is =", round(alpha, 3), "\n")
+
+
+
+
+
+
+
