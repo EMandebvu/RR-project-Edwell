@@ -120,6 +120,94 @@ ggplot(df, aes(x = Rm_pct, y = TSLA_pct)) +
     x = "S&P500 Return (%)",
     y = "TSLA Return (%)"
   ) +
+  theme_minimal()
+
+beta <- coef(model)
+print(beta)
+# Calculate the average daily return of the S&P 500
+mean_sp500 <- mean(df$Rm, na.rm = TRUE)
+mean_sp500_percent <- mean_sp500 * 100  
+options(digits = 3)
+print(mean_sp500_percent)
+
+# Calculate the average daily return of the S&P500
+mean_sp500 <- mean(df$Rm, na.rm = TRUE)
+
+# Annualize the return by multiplying by 252 trading days in a year
+# (252 is commonly used in finance to represent trading days)
+rm <- round(mean_sp500 * 252, 3)
+
+# Print the annualized return
+cat("Annualized return of S&P500:", rm, "\n")
+
+rf <- 0.66              # risk-free rate in %
+rm <- 12.4            # market return in %
+
+beta <- 1.269          # previously calculated beta
+
+# CAPM expected return for AAPL
+ER_AAPL <- round(rf + beta * (rm - rf), 3)
+
+# Output the result
+cat("Expected return of AAPL using CAPM is:", ER_AAPL, "%\n")
+
+
+# Convert returns to percentage for T and market return (Rm)
+df$T_pct <- df$T * 100
+df$Rm_pct <- df$Rm * 100  # Make sure Rm is your market return column
+
+# Fit linear regression model: T_pct ~ Rm_pct
+model <- lm(T_pct ~ Rm_pct, data = df)
+
+# Extract beta (slope) and alpha (intercept)
+beta <- coef(model)[["Rm_pct"]]
+alpha <- coef(model)[["(Intercept)"]]
+
+# Print results
+cat(sprintf("Beta for %s stock is = %.3f and alpha is = %.3f\n", "T", beta, alpha))
+
+# Calculate expected return for AT&T using CAPM
+# rf: risk-free rate
+# beta: beta of AT&T
+# rm: expected market return
+
+ER_T <- round(rf + (beta * (rm - rf)), 3)
+print(ER_T)
+
+
+# Loop over each stock column except 'Date' and 'sp500'
+stock_columns <- setdiff(names(df), c("Date", "Rm", "Rf", "Ri_excess", "Rm_excess","TSLA_pct", "Ri_pct", "Rm_pct", "T_pct"))
+
+for (stock in stock_columns) {
+  
+  # Fit linear model
+  model <- lm(df[[stock]] ~ df$Rm)
+  beta <- coef(model)[2]
+  alpha <- coef(model)[1]
+  
+  # Create data frame for regression line
+  sp500_vals <- df$Rm
+  fitted_vals <- beta * sp500_vals + alpha
+  
+  # Combine into one dataframe
+  plot_data <- data.frame(
+    sp500 = sp500_vals,
+    stock = df[[stock]],
+    fitted = fitted_vals
+  )
+  
+  # Plot interactive scatter + regression line
+  fig <- plot_ly(plot_data, x = ~sp500, y = ~stock, type = 'scatter', mode = 'markers', name = stock) %>%
+    add_lines(y = ~fitted, name = 'Regression Line') %>%
+    layout(title = stock,
+           xaxis = list(title = "S&P500 Return"),
+           yaxis = list(title = paste(stock, "Return")))
+  
+  print(fig) 
+}
+
+
+
 
 
 
