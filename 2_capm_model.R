@@ -175,28 +175,37 @@ ER_T <- round(rf + (beta * (rm - rf)), 3)
 print(ER_T)
 
 
-# Loop over each stock column except 'Date' and 'sp500'
+# Create empty data frame to store results
+results <- data.frame(
+  Stock = character(),
+  Beta = numeric(),
+  Alpha = numeric(),
+  stringsAsFactors = FALSE
+)
+
+# Loop over each stock column
 stock_columns <- setdiff(names(df), c("Date", "Rm", "Rf", "Ri_excess", "Rm_excess","TSLA_pct", "Ri_pct", "Rm_pct", "T_pct"))
 
 for (stock in stock_columns) {
   
-  # Fit linear model
-  model <- lm(df[[stock]] ~ df$Rm)
+  # Fit linear model: stock return ~ market return
+  model <- lm(I(df[[stock]] * 100) ~ I(df$Rm * 100))
   beta <- coef(model)[2]
   alpha <- coef(model)[1]
   
-  # Create data frame for regression line
+  # Save Beta and Alpha
+  results <- rbind(results, data.frame(Stock = stock, Beta = beta, Alpha = alpha))
+  
+  # Create data frame for plotting
   sp500_vals <- df$Rm
   fitted_vals <- beta * sp500_vals + alpha
-  
-  # Combine into one dataframe
   plot_data <- data.frame(
     sp500 = sp500_vals,
     stock = df[[stock]],
     fitted = fitted_vals
   )
   
-  # Plot interactive scatter + regression line
+  # Interactive scatter plot
   fig <- plot_ly(plot_data, x = ~sp500, y = ~stock, type = 'scatter', mode = 'markers', name = stock) %>%
     add_lines(y = ~fitted, name = 'Regression Line') %>%
     layout(title = stock,
@@ -206,8 +215,199 @@ for (stock in stock_columns) {
   print(fig) 
 }
 
+# Round and print results
+results$Beta <- round(results$Beta, 3)
+results$Alpha <- round(results$Alpha, 3)
+print(results)
+
+
+# Assume your dataframe is called df, with columns "Date", "sp500", and stocks
+
+# Create empty lists to store beta and alpha values
+beta <- list()
+alpha <- list()
+
+# Get all stock columns except "Date" and "sp500"
+stock_columns <- setdiff(names(df), c("Date", "Rm", "Rf", "Ri_excess", "Rm_excess","TSLA_pct", "Ri_pct", "Rm_pct", "T_pct"))
+
+for (stock in stock_columns) {
+  
+  # Fit linear regression: stock returns ~ sp500 returns
+  model <- lm(df[[stock]] ~ df$Rm)
+  b <- coef(model)[2]  # beta (slope)
+  a <- coef(model)[1]  # alpha (intercept)
+  
+  # Save beta and alpha to the lists
+  beta[[stock]] <- b
+  alpha[[stock]] <- a
+  
+  # Prepare data for plotting
+  plot_data <- data.frame(
+    sp500 = df$Rm,
+    stock = df[[stock]]
+  )
+  
+  # Plot scatter + regression line using ggplot2
+  p <- ggplot(plot_data, aes(x = sp500, y = stock)) +
+    geom_point(color = "blue") +
+    geom_abline(intercept = a, slope = b, color = "darkred") +
+    ggtitle(stock) +
+    xlab("S&P 500 Return") +
+    ylab(paste0(stock, " Return")) +
+    theme_minimal()
+  
+  print(p)
+}
+
+# Check beta and alpha values
+beta
+alpha
+
+keys <- names(beta)
+print(keys)
+
+
+# Define an empty list to store expected returns
+ER <- list()
+
+# Risk-free rate
+rf <- 0.66
+
+# Calculate the expected annualized market return
+# Assuming daily returns and 252 trading days in a year
+rm <- round(mean(df$Rm) * 252 * 100, 1)
+print(rm)
+
+# Assume rf, rm, beta are defined; keys is names(beta)
+ER <- list()  # empty list to store expected returns
+
+for (i in keys) {
+  ER[[i]] <- rf + beta[[i]] * (rm - rf)
+  cat(sprintf("Expected Return Based on CAPM for %s is %.3f%%\n", i, ER[[i]]))
+}
+
+# Assume equal weights in the portfolio (8 assets)
+portfolio_weights <- rep(1/8, 8)
+portfolio_weights
+
+# Calculate portfolio expected return
+ER_numeric <- sapply(ER, as.numeric)
+ER_portfolio_all <- round(sum(ER_numeric * portfolio_weights), 3)
+cat(sprintf("Expected Return Based on CAPM for the portfolio is %.3f%%\n", ER_portfolio_all))
+
+# Calculate the portfolio return in R
+ER_portfolio <- round(0.50 * ER[["Ri"]] + 0.50 * ER[["AMZN"]], 3)
+
+# Print the result
+cat(sprintf("Expected Return Based on CAPM for the portfolio (50%% allocation in Apple and 50%% in Amazon) is %.3f%%\n", ER_portfolio))
+
+
+# Calculate the portfolio return in R (Consumer Services: 50% T, 50% MGM)
+ER_portfolio_ConsumerServices <- round(0.50 * ER[["T"]] + 0.50 * ER[["MGM"]], 3)
+
+# Print the result
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Consumer Services) is %.3f%%\n", ER_portfolio_ConsumerServices))
+
+# Calculate the portfolio return in R (Manufacturing Sector: 50% TSLA, 50% BA)
+ER_portfolio_Manufacturing <- round(0.50 * ER[["TSLA"]] + 0.50 * ER[["BA"]], 3)
+
+# Print the result
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Manufacturing Sector) is %.3f%%\n", ER_portfolio_Manufacturing))
+
+# Calculate the portfolio return in R (Personal Devices Sector: AAPL, IBM, GOOG, AMZN each 25%)
+ER_portfolio_PersonalDevices <- round(
+  0.25 * ER[["Ri"]] + 
+    0.25 * ER[["IBM"]] + 
+    0.25 * ER[["GOOG"]] + 
+    0.25 * ER[["AMZN"]], 
+  3
+)
+
+# Print the result
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Personal Devices Sector) is %.3f%%\n", 
+            ER_portfolio_PersonalDevices))
+
+# Calculate portfolio return in R (Less than Market Return portfolio: T, IBM, GOOG, AMZN each 25%)
+ER_portfolio_bm <- round(
+  0.25 * ER[["T"]] + 
+    0.25 * ER[["IBM"]] + 
+    0.25 * ER[["GOOG"]] + 
+    0.25 * ER[["AMZN"]],
+  3
+)
+
+# Print the result
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Less than Market Return) is %.3f%%\n", ER_portfolio_bm))
+
+ER_portfolio_am <- round(
+  0.25 * ER[["Ri"]] + 
+    0.25 * ER[["BA"]] + 
+    0.25 * ER[["MGM"]] + 
+    0.25 * ER[["TSLA"]],
+  1
+)
+
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Above than Market Return) is %.3f%%\n", ER_portfolio_am))
 
 
 
 
+sum_ER <- 0
+for (i in keys) {
+  sum_ER <- sum_ER + ER[[i]]
+}
 
+for (i in keys) {
+  contribution <- round(ER[[i]] / sum_ER, 2)
+  cat(sprintf("Contribution on CAPM for %s is %.2f\n", i, contribution))
+}
+
+ER_portfolio_b <- round(
+  0.12 * ER[['Ri']] + 0.15 * ER[['BA']] + 0.08 * ER[['T']] + 0.18 * ER[['MGM']] +
+    0.11 * ER[['AMZN']] + 0.11 * ER[['IBM']] + 0.14 * ER[['TSLA']] + 0.11 * ER[['GOOG']], 3
+)
+
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Balanced Weightage) is %.3f%%\n", ER_portfolio_b))
+
+
+ER_portfolio_hp <- round(0.33 * ER[['TSLA']] + 0.33 * ER[['BA']] + 0.34 * ER[['MGM']], 3)
+
+cat(sprintf("Expected Return Based on CAPM for the portfolio (High performing) is %.3f%%\n", ER_portfolio_hp))
+
+
+ER_portfolio_lp <- round(0.33 * ER[['T']] + 0.33 * ER[['GOOG']] + 0.34 * ER[['IBM']], 3)
+
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Weak performing) is %.3f%%\n", ER_portfolio_lp))
+
+ER_portfolio_ap <- round(as.numeric(ER[["Ri"]]), 3)
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Average performing) is %.3f%%\n", ER_portfolio_ap))
+
+
+ER_portfolio_ed <- round(0.50 * as.numeric(ER[["T"]]) + 0.50 * as.numeric(ER[["MGM"]]), 3)
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Extremes) is %.3f%%\n", ER_portfolio_ed))
+
+ER_portfolio_median <- round(0.50 * as.numeric(ER[["GOOG"]]) + 0.50 * as.numeric(ER[["Ri"]]), 3)
+cat(sprintf("Expected Return Based on CAPM for the portfolio (Median) is %.3f%%\n", ER_portfolio_median))
+
+# Create a data frame
+data <- data.frame(
+  Combinations = c('AAPL', 'BA', 'T', 'MGM', 'AMZN', 'IBM', 'TSLA', 'GOOG', 'Equal Portfolio Weights',
+                   'AAPL+AMZN', 'Consumer Services', 'Manufacturing Sector', 'Personal Devices Sector',
+                   'Less than Market Return', 'Above than Market Return', 'Balanced Weightage',
+                   'High performing', 'Weak performing', 'Average performing', 'Extremes', 'Median'),
+  Expected_Return_Based_on_CAPM = c(13.757,16.934,9.423,20.119,12.331,11.962,15.589,12.838,14.119,
+                                    13.044,14.771,16.261,12.722,11.639,16.6,14.833,17.573,11.413,
+                                    13.757,14.771,13.298)
+)
+
+# Sort the data frame by expected return in descending order
+Returns <- data %>%
+  arrange(desc(Expected_Return_Based_on_CAPM))
+
+print(Returns)
+
+print("Top 5 Suggested Portfolio")
+head(Returns, 5)
+
+print("Bottom 5 Suggested Portfolio") 
+tail(Returns, 5)
