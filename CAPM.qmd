@@ -1,0 +1,283 @@
+---
+title: "Capital Asset Pricing Model"
+author: "Team Chen, Edwell, Praise"
+format: 
+  html:
+    toc: true          
+    toc-depth: 3       
+    warning: false
+    error: false
+    message: false
+editor: visual
+---
+
+## Stage 1: Load data
+
+```{r}
+suppressPackageStartupMessages(library(plotly))
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggplot2))
+suppressPackageStartupMessages(library(readr))
+```
+
+```{r}
+df <- read_csv("M:/UW QF/Sem 2/Reproducible Research/New folder/cleaned_data.csv", show_col_types = FALSE )
+
+```
+
+### Checking the first few rows
+
+```{r}
+head(df)
+```
+
+### Converting Date column to Date type
+
+```{r}
+df$Date <- as.Date(df$Date)
+```
+
+## Stage 2: Prep and normalizing returns
+
+```{r}
+# Select columns of interest: Date + selected stocks + market returns
+returns_df <- df %>% select(Date, BA, T, MGM, AMZN, IBM, TSLA, GOOG, Ri, Rm)
+
+# Calculate cumulative index (base 100) from daily returns
+cumulative_df <- returns_df
+cumulative_df[,-1] <- apply(returns_df[,-1], 2, function(x) cumprod(1 + x) * 100)
+
+# Preview cumulative returns
+head(cumulative_df)
+
+```
+
+## Stage 3: Interactive plot of cumulative stock performance
+
+```{r}
+interactive_plot <- function(df, title) {
+  fig <- plot_ly()
+  
+  for (col_name in colnames(df)[-1]) {
+    fig <- fig %>%
+      add_trace(x = df$Date,
+                y = df[[col_name]],
+                type = 'scatter',
+                mode = 'lines',
+                name = col_name)
+  }
+  
+  fig <- fig %>%
+    layout(title = title,
+           xaxis = list(title = "Date"),
+           yaxis = list(title = "Index Value (Base = 100)"))
+  
+  return(fig)
+}
+
+# Generate the interactive plot
+interactive_plot(cumulative_df, "Stock Performance Indexed to 100")
+
+```
+
+## Stage 4: Average daily returns
+
+```{r}
+avg_daily_returns <- df %>%
+  select(-Date) %>%
+  summarise(across(everything(), ~ mean(.x, na.rm = TRUE)))
+
+print(avg_daily_returns)
+
+```
+
+## Stage 5: Plot - Single Stock (AAPL) vs Market Returns
+
+```{r}
+ggplot(df, aes(x = Rm, y = Ri)) +
+  geom_point(color = "darkgreen") +
+  labs(
+    title = "AAPL vs Market Returns",
+    x = "S&P 500",
+    y = "AAPl"
+  ) +
+  theme_minimal()
+
+```
+
+## Stage 6: Linear regression and regression plot
+
+```{r}
+# Convert returns to percentage
+df$Ri_pct <- df$Ri * 100
+df$Rm_pct <- df$Rm * 100
+
+# Fit linear regression model
+model <- lm(Ri_pct ~ Rm_pct, data = df)
+
+# Extract coefficients
+beta <- coef(model)[["Rm_pct"]]
+alpha <- coef(model)[["(Intercept)"]]
+
+cat("Beta for AAPL stock is =", round(beta, 3), "and alpha is =", round(alpha, 3), "\n")
+
+# Plot scatter with regression line
+ggplot(df, aes(x = Rm_pct, y = Ri_pct)) +
+  geom_point(color = "blue") +
+  geom_abline(intercept = alpha, slope = beta, linetype = "dashed", color = "red") +
+  labs(
+    title = "Scatter Plot: AAPL vs S&P500 Returns",
+    x = "Market Return (S&P 500, %)",
+    y = "AAPL Return (%)"
+  ) +
+  theme_minimal()
+
+```
+
+## Stage 7: Annualized market return and CAPM expected returns
+
+```{r}
+# Define stock columns to analyze (update this list as per your data)
+stock_columns <- c("BA", "T", "MGM", "AMZN", "IBM", "TSLA", "GOOG", "Ri") 
+
+# Ensure market returns in percentage
+df$Rm_pct <- df$Rm * 100
+
+# Risk-free rate (annual, in %)
+rf <- 0.66
+
+# Annualize market return (mean daily return * 252 trading days * 100 to convert to %)
+annual_rm <- mean(df$Rm, na.rm = TRUE) * 252 * 100
+cat("Annualized market return (S&P500):", round(annual_rm, 3), "%\n")
+
+# Data frame to store all results
+results <- data.frame(Stock=character(), Beta=numeric(), Alpha=numeric(), ExpectedReturn=numeric(), stringsAsFactors=FALSE)
+
+for (stock in stock_columns) {
+  
+  # Create daily returns in percent for the stock
+  stock_pct_col <- paste0(stock, "_pct")
+  df[[stock_pct_col]] <- df[[stock]] * 100
+  
+  # Fit linear regression: Stock returns ~ Market returns
+  model <- lm(df[[stock_pct_col]] ~ df$Rm_pct)
+  beta <- coef(model)[2]
+  alpha <- coef(model)[1]
+  
+  # Calculate CAPM expected return
+  expected_return <- rf + beta * (annual_rm - rf)
+  
+  # Save to results
+  results <- rbind(results, data.frame(Stock = stock, Beta = beta, Alpha = alpha, ExpectedReturn = expected_return))
+  
+  # Plot scatter + regression line for each stock
+  plot_data <- data.frame(Market = df$Rm_pct, Stock = df[[stock_pct_col]])
+  p <- ggplot(plot_data, aes(x = Market, y = Stock)) +
+    geom_point(color = "blue", alpha=0.5) +
+    geom_abline(intercept = alpha, slope = beta, color = "red") +
+    labs(title = paste("Scatter Plot & Regression:", stock, "vs S&P500"),
+         x = "Market Return (%)",
+         y = paste(stock, "Return (%)")) +
+    theme_minimal()
+  
+  print(p)
+  
+  # Print beta, alpha, expected return
+  cat(sprintf("Stock: %s | Beta: %.3f | Alpha: %.3f | Expected CAPM Return: %.3f%%\n", stock, beta, alpha, expected_return))
+}
+
+# Round results for better readability
+results$Beta <- round(results$Beta, 3)
+results$Alpha <- round(results$Alpha, 3)
+results$ExpectedReturn <- round(results$ExpectedReturn, 3)
+
+print(results)
+
+
+```
+
+## Stage 8: Portfolio expected returns based on CAPM
+
+```{r}
+# Calculate expected returns for each stock using CAPM formula
+rf <- 0.66
+rm <- round(mean(df$Rm, na.rm = TRUE) * 252 * 100, 1)
+
+ER <- setNames(numeric(length(stock_columns)), stock_columns)
+
+for (stock in stock_columns) {
+  beta <- results$Beta[results$Stock == stock]
+  ER[stock] <- rf + beta * (rm - rf)
+  cat(sprintf("Expected Return Based on CAPM for %s is %.3f%%\n", stock, ER[stock]))
+}
+
+# Example: Equal weights portfolio (assuming 8 stocks)
+portfolio_weights <- rep(1/length(stock_columns), length(stock_columns))
+
+# Portfolio expected return
+ER_portfolio <- sum(ER * portfolio_weights)
+
+cat(sprintf("Expected Return for equal-weighted portfolio is %.3f%%\n", ER_portfolio))
+
+```
+
+## Stage 9: Validation
+
+```{r}
+# Stage 9: Validation statistics for all stocks CAPM models
+
+library(broom)  # for tidy()
+
+# Prepare data in long format for modeling
+returns_long <- df %>%
+  select(Date, all_of(stock_columns), Rm_pct) %>%
+  pivot_longer(cols = all_of(stock_columns), names_to = "Stock", values_to = "Return") %>%
+  # Ensure both Return and Rm_pct have no NA/Inf
+  filter(!is.na(Return), !is.na(Rm_pct), !is.infinite(Return), !is.infinite(Rm_pct))
+
+# Run linear regression for each stock
+models <- returns_long %>%
+  group_by(Stock) %>%
+  summarise(
+    model = list(lm(Return ~ Rm_pct, data = cur_data_all()))
+  )
+
+# Extract model statistics in a tidy dataframe
+validation_stats <- models %>%
+  mutate(
+    tidy = map(model, broom::tidy),
+    glance = map(model, broom::glance)
+  ) %>%
+  unnest(tidy) %>%
+  filter(term == "Rm_pct") %>%
+  select(Stock, estimate, std.error, statistic, p.value) %>%
+  rename(
+    Beta = estimate,
+    StdError = std.error,
+    Tvalue = statistic,
+    Pvalue = p.value
+  ) %>%
+  left_join(
+    models %>%
+      mutate(glance = map(model, broom::glance)) %>%
+      unnest(glance) %>%
+      select(Stock, r.squared, adj.r.squared),
+    by = "Stock"
+  ) %>%
+  arrange(Stock)
+
+# Print the validation statistics summary
+print(validation_stats)
+
+# Optional: save to CSV
+# write_csv(validation_stats, "capm_validation_stats.csv")
+
+```
+
+All betas are positive and statistically significant, meaning all these stocks have returns positively related to market returns, consistent with CAPM assumptions.
+
+Magnitude of betas are small (\~0.007 to 0.016) — this may be because returns are expressed in daily % terms and/or your market returns scale is low. The relationship exists but daily beta is small.
+
+R-squared values vary from about 0.15 to 0.5, indicating the market explains between 15% to 50% of return variance. Stocks like IBM, GOOG have stronger market relationships, while TSLA has the weakest.
+
+The very low p-values (\< 0.0001) confirm the relationships are highly statistically significant for all stocks.
