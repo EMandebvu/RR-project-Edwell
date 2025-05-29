@@ -1,6 +1,6 @@
 ---
 title: "Capital Asset Pricing Model"
-author: "Team Chen, Edwell, Praise"
+author: "Team: Chen, Edwell, Praise"
 format: 
   html:
     toc: true          
@@ -13,6 +13,8 @@ editor: visual
 
 ## Stage 1: Load data
 
+This section loads the necessary R packages—**`plotly`** for interactive plots, **`tidyverse`**, **`ggplot2`** for data manipulation and visualization and **`readr`** for data reading.
+
 ```{r}
 suppressPackageStartupMessages(library(plotly))
 suppressPackageStartupMessages(library(tidyverse))
@@ -20,24 +22,28 @@ suppressPackageStartupMessages(library(ggplot2))
 suppressPackageStartupMessages(library(readr))
 ```
 
+Reading the CSV data file
+
 ```{r}
 df <- read_csv("M:/UW QF/Sem 2/Reproducible Research/New folder/cleaned_data.csv", show_col_types = FALSE )
 
 ```
 
-### Checking the first few rows
+A quick look at the first few rows is performed to verify the structure and contents of the dataset.(Ri is AAPL, Rm is market return(s&p 500)
 
 ```{r}
 head(df)
 ```
 
-### Converting Date column to Date type
+Converting Date column to Date type.
 
 ```{r}
 df$Date <- as.Date(df$Date)
 ```
 
 ## Stage 2: Prep and normalizing returns
+
+A subset of the dataset is created, focusing on selected stock returns (`BA`, `T`, `MGM`, `AMZN`, `IBM`, `TSLA`, `GOOG`, `Ri`) and the market return (`Rm`). Cumulative returns are then computed by chaining daily returns into an index format, normalized to a base value of 100. (RI is AAPL)
 
 ```{r}
 # Select columns of interest: Date + selected stocks + market returns
@@ -53,6 +59,8 @@ head(cumulative_df)
 ```
 
 ## Stage 3: Interactive plot of cumulative stock performance
+
+An interactive line chart is generated using Plotly, visualizing the cumulative returns of selected stocks and the market over time. Each line represents a different asset, indexed to a starting value of 100.
 
 ```{r}
 interactive_plot <- function(df, title) {
@@ -82,6 +90,8 @@ interactive_plot(cumulative_df, "Stock Performance Indexed to 100")
 
 ## Stage 4: Average daily returns
 
+The mean daily return is calculated for each stock and the market, summarizing the average performance over the observed period.
+
 ```{r}
 avg_daily_returns <- df %>%
   select(-Date) %>%
@@ -93,19 +103,35 @@ print(avg_daily_returns)
 
 ## Stage 5: Plot - Single Stock (AAPL) vs Market Returns
 
+A scatter plot is created to visualize the relationship between daily returns of a single stock Ri (AAPL) and the overall market returns (S&P 500).
+
+CAPM assumes a linear relationship between an individual stock’s returns and market returns. This plot visually inspects that relationship, helping to assess if the stock’s returns move consistently with the market as CAPM suggests.
+
 ```{r}
 ggplot(df, aes(x = Rm, y = Ri)) +
   geom_point(color = "darkgreen") +
   labs(
-    title = "AAPL vs Market Returns",
-    x = "S&P 500",
-    y = "AAPl"
+    title = "Ri (AAPL) vs Rm(Market Returns)",
+    x = "Rm",
+    y = "Ri"
   ) +
   theme_minimal()
 
 ```
 
 ## Stage 6: Linear regression and regression plot
+
+A linear regression model is fitted to quantify the relationship between Ri's (AAPL) daily returns and the market’s daily returns, both expressed in percentages. The regression estimates two key parameters:
+
+**Beta:** Measures sensitivity of the stock’s returns to market returns.
+
+**Alpha:** Represents the stock’s return independent of market movements (intercept).
+
+A scatter plot with the regression line is also produced to visually confirm this relationship.
+
+Beta is a fundamental parameter in CAPM, indicating the stock’s systematic risk relative to the market. Alpha helps identify any abnormal returns beyond what CAPM predicts. This step formally quantifies the core assumptions of CAPM by fitting the expected linear relation.
+
+**Apple is used in this case because of its market influence, and relatively stable return trends.** As one of the largest and most closely watched companies, Apple often reflects the broader behavior of big tech stocks. Applying CAPM to Apple first provides a clean and intuitive illustration of the regression process and its visual interpretation. This serves as a practical baseline before applying the same procedure to other stocks in the portfolio.
 
 ```{r}
 # Convert returns to percentage
@@ -120,21 +146,30 @@ beta <- coef(model)[["Rm_pct"]]
 alpha <- coef(model)[["(Intercept)"]]
 
 cat("Beta for AAPL stock is =", round(beta, 3), "and alpha is =", round(alpha, 3), "\n")
+```
+
+Beta of 1.113 indicates AAPL’s returns are 11.3% more sensitive to market movements than the average stock.\
+Alpha of 0.053 shows AAPL generates a 5.3% excess return beyond what is predicted by market risk.
+
+```{r}
+
 
 # Plot scatter with regression line
 ggplot(df, aes(x = Rm_pct, y = Ri_pct)) +
   geom_point(color = "blue") +
   geom_abline(intercept = alpha, slope = beta, linetype = "dashed", color = "red") +
   labs(
-    title = "Scatter Plot: AAPL vs S&P500 Returns",
-    x = "Market Return (S&P 500, %)",
-    y = "AAPL Return (%)"
+    title = "Scatter Plot: Ri (AAPL) vs Rm (S&P500) Returns",
+    x = "Market Return (%)",
+    y = "Ri Return (%)"
   ) +
   theme_minimal()
 
 ```
 
 ## Stage 7: Annualized market return and CAPM expected returns
+
+This stage applies the Capital Asset Pricing Model (CAPM) to estimate the expected annual returns for a set of selected stocks. The procedure begins by calculating the annualized market return using the mean of daily Rm (S&P 500) returns scaled by 252 trading days. A fixed risk-free rate is then used along with each stock’s beta derived from a linear regression of the stock's returns on market returns to compute the CAPM expected return. Each stock’s beta, alpha, and expected return are stored, and a regression plot is generated to visually show the relationship between stock and market returns.
 
 ```{r}
 # Define stock columns to analyze (update this list as per your data)
@@ -193,10 +228,17 @@ results$ExpectedReturn <- round(results$ExpectedReturn, 3)
 
 print(results)
 
-
 ```
 
+**Beta (Volatility vs Market):**\
+Beta values highlight how sensitive each stock is to movements in the overall market. Stocks like *TSLA* and *MGM* show high beta, indicating they tend to move more sharply in response to market changes—making them more volatile and risk-prone. In contrast, stocks such as *T* and *IBM* have lower beta values, suggesting more stable price movements with less responsiveness to market fluctuations.
+
+**Alpha (Excess Return vs Market):**\
+Alpha measures the portion of a stock’s return that exceeds what would be expected based on its market exposure. Positive alpha values, seen in *AMZN*, *GOOG*, *TSLA*, and *AAPL*, suggest these stocks consistently outperformed the market beyond what CAPM predicts. Negative alphas in stocks like *T*, *MGM*, and *IBM* indicate underperformance, where returns fell short of their risk-adjusted expectations.
+
 ## Stage 8: Portfolio expected returns based on CAPM
+
+This stage calculates the expected return of a portfolio using the CAPM-derived expected returns for each individual stock. After reapplying the CAPM formula to confirm the expected returns based on previously computed betas, the stocks are combined into a hypothetical equal-weighted portfolio. The portfolio's overall expected return is then obtained by taking the weighted average of the individual expected returns.
 
 ```{r}
 # Calculate expected returns for each stock using CAPM formula
@@ -222,6 +264,8 @@ cat(sprintf("Expected Return for equal-weighted portfolio is %.3f%%\n", ER_portf
 ```
 
 ## Stage 9: Validation
+
+This stage validates the CAPM regression models for each stock by extracting key statistical measures from their linear regressions. For each stock, it calculates the beta coefficient's standard error, t-value, and p-value to test significance, along with the R-squared and adjusted R-squared values to assess model fit.
 
 ```{r}
 # Stage 9: Validation statistics for all stocks CAPM models
@@ -274,10 +318,12 @@ print(validation_stats)
 
 ```
 
-All betas are positive and statistically significant, meaning all these stocks have returns positively related to market returns, consistent with CAPM assumptions.
+**Validation Summary of CAPM Models**
 
-Magnitude of betas are small (\~0.007 to 0.016) — this may be because returns are expressed in daily % terms and/or your market returns scale is low. The relationship exists but daily beta is small.
+The validation statistics offer insight into how well the CAPM explains each stock's return in relation to the market. Across the board, **p-values are effectively zero**, confirming that the relationship between market returns and individual stock returns is statistically significant.
 
-R-squared values vary from about 0.15 to 0.5, indicating the market explains between 15% to 50% of return variance. Stocks like IBM, GOOG have stronger market relationships, while TSLA has the weakest.
+**Beta estimates** are all positive and statistically robust, indicating each stock exhibits some level of market-related behavior. However, **R-squared values vary** substantially—ranging from *\~15% (TSLA)* to nearly *50% (IBM)*—indicating differing levels of explanatory power. Stocks like *IBM*, *GOOG*, and *BA* show relatively **high R-squared values**, meaning a substantial portion of their return variation is explained by the market. In contrast, *TSLA* shows a **low R-squared**, suggesting that a significant share of its performance is driven by idiosyncratic, non-market factors.
 
-The very low p-values (\< 0.0001) confirm the relationships are highly statistically significant for all stocks.
+**Standard errors** for beta estimates are generally low, supporting the reliability of the beta values. **T-values are high** for all stocks, reinforcing the strength of the linear relationship.
+
+Overall, the CAPM model performs reasonably well for most stocks, especially for large-cap and stable firms like *IBM* and *GOOG*, while being less explanatory for more volatile or speculative stocks like *TSLA*.
