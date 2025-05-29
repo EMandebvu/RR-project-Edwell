@@ -1,0 +1,67 @@
+---
+title: "Capital Asset Pricing Model Presentation"
+author: "Team: Chen, Edwell, Praise"
+format: 
+  revealjs:
+    theme: dark
+    slide-number: true
+    code-line-numbers: true
+    css: styles.css  # Optional: for additional custom styling
+    incremental: true
+    preview-links: true
+    smaller: true  # Reduces overall font size
+editor: visual
+---
+
+## **Comparison of CAPM Implementation: R (Quarto) vs Python (Jupyter Notebook)**
+
+This document summarizes key improvements made in the R-based Quarto implementation of the CAPM analysis compared to the original Python-based Jupyter Notebook version. While both environments are capable of performing the same financial computations, several practical and presentation-focused enhancements were noted in the R version:
+
+## **Clear Explanations for Each Stage**
+
+**Improvement:**
+
+Each analysis step in the Quarto document includes a clear explanation of what is being done, why it is relevant to CAPM, and how it connects to the broader objective.
+
+**Python Limitation:**
+
+The Jupyter Notebook mostly presents code and output without accompanying narrative, leaving interpretation to the reader.
+
+## **Interpretation of Results**
+
+**Improvement:** Key statistics such as beta, alpha, R-squared, and CAPM expected returns are accompanied by interpretations that explain their significance in financial terms.
+
+**Python Limitation:** Numerical outputs are presented without contextual explanations or financial insights.
+
+## **Structured Workflow**
+
+**Improvement:** The R version is structured into clearly defined stages (e.g., Stage 1 to Stage 9), providing a logical, easy-to-follow workflow.
+
+**Python Limitation:** The analysis in Python is fragmented with no consistent organization, making the analytical flow harder to follow.
+
+## **Enhanced Readability and Presentation**
+
+**Improvement:** R code is modular and visually clean, with consistently labeled plots and summaries that enhance readability.
+
+**Python Limitation:** Visual outputs are not consistently formatted or labeled for interpretability.
+
+## **Portfolio-Level Analysis Added**
+
+**Improvement:** The Quarto document calculates portfolio-level expected returns using CAPM, adding practical relevance for investors.
+
+**Python Limitation:** The Jupyter Notebook focuses solely on individual stock analysis without aggregating results for a portfolio.
+
+## **Model Validation and Statistical Diagnostics**
+
+**Improvement:** The final stage in the R implementation includes comprehensive validation metrics for all stock models, including t-values, p-values, and R-squared values.
+
+**Python Limitation:** Diagnostic metrics are limited or absent, offering no assessment of model fit or reliability.
+
+## Reference:
+
+\
+**Original project:** <https://www.kaggle.com/code/gauravduttakiit/capital-asset-pricing-model/notebook>
+
+**Sharpe, W. F. (1964).** Capital asset prices: A theory of market equilibrium under conditions of risk. *The Journal of Finance, 19*(3), 425–442. https://doi.org/10.2307/2977928
+
+**Bodie, Z., Kane, A., & Marcus, A. J. (2019).** *Investments* (11th ed.). McGraw-Hill Education.
