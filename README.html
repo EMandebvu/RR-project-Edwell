@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Praise, Edwell, Chen" />
+<meta name="author" content="Edwell B Mandebvu" />
 
 
 <title>CAPM Model Reproduction (Python → R)</title>
@@ -350,26 +350,35 @@ display: none;
 
 
 <h1 class="title toc-ignore">CAPM Model Reproduction (Python → R)</h1>
-<h3 class="subtitle">Financial Economics Project | [RR Research]</h3>
-<h4 class="author">Praise, Edwell, Chen</h4>
+<h3 class="subtitle">Financial Economics Project | [Reproducible
+Research]</h3>
+<h4 class="author">Edwell B Mandebvu</h4>
 
 </div>
 
 
-<div id="project-overview" class="section level2">
-<h2>📌 Project Overview</h2>
-<div id="objective" class="section level3">
-<h3>Objective</h3>
+<p><strong>Source</strong>: <a href="https://www.kaggle.com/code/gauravduttakiit/capital-asset-pricing-model/notebook">Original
+Kaggle Notebook</a> by Gaurav Dutt</p>
+<div id="project-overview" class="section level3">
+<h3><strong>Project Overview</strong></h3>
+<div id="objective" class="section level4">
+<h4>Objective</h4>
 <p>Reproduce a Capital Asset Pricing Model (CAPM) implementation from
 Python to R, analyzing reproducibility challenges in financial
 econometrics.</p>
+<hr />
 </div>
-<div id="source-project" class="section level3">
-<h3>Source Project</h3>
-<p>Original Kaggle Notebook by <strong>Gaurav Dutt</strong></p>
+<div id="key-components" class="section level4">
+<h4>Key Components</h4>
+<ul>
+<li>Data cleaning and preprocessing</li>
+<li>CAPM regression modeling</li>
+<li>Portfolio return calculations</li>
+<li>Statistical validation</li>
+</ul>
 </div>
-<div id="technical-stack" class="section level3">
-<h3>Technical Stack</h3>
+<div id="technical-stack" class="section level4">
+<h4>Technical Stack</h4>
 <table>
 <thead>
 <tr class="header">
@@ -397,16 +406,23 @@ econometrics.</p>
 </tbody>
 </table>
 </div>
-<div id="repository-structure" class="section level3">
-<h3>Repository Structure</h3>
-<p>RR-project-TeamPEC/ - code/ - original_python/ # Source Python
-implementation - rewritten_r/ # Our R translation - data/ # Processed
-datasets (cleaned_returns.csv) - docs/ # Project report &amp;
-presentation - outputs/ # Generated plots/analysis</p>
+<div id="repository-structure" class="section level4">
+<h4>Repository Structure</h4>
+<pre><code>project-root/
+├── data/
+│ └── cleaned_data.csv # Processed dataset
+├── code/
+│ ├── original_python/ # Source implementation
+│ └── rewritten_r/ # R translation
+│ ├── analysis.qmd # Main Quarto document
+│ └── functions.R # Helper functions
+└── outputs/
+├── plots/ # Visualization exports
+└── tables/ # Statistical outputs</code></pre>
 <hr />
 </div>
-<div id="reproducibility-validation" class="section level3">
-<h3>Reproducibility Validation</h3>
+<div id="reproducibility-validation" class="section level4">
+<h4>Reproducibility Validation</h4>
 <p>To ensure the reproducibility of our CAPM implementation, please
 follow these steps:</p>
 <ol style="list-style-type: decimal">
@@ -423,17 +439,14 @@ discrepancies.</p></li>
 <li><strong>Data Consistency</strong>
 <ul>
 <li>Use the provided cleaned dataset
-<code>data/cleaned_returns.csv</code> to reproduce results
-exactly.<br />
-</li>
+<code>data/cleaned_returns.csv</code> to reproduce results exactly.</li>
 <li>Do not modify raw data unless changes are documented.</li>
 </ul></li>
 <li><strong>Run the Code</strong>
 <ul>
 <li>First, execute the Python scripts/notebooks in
 <code>code/original_python/</code> to reproduce the original CAPM
-results.<br />
-</li>
+results.</li>
 <li>Then run the R scripts in <code>code/rewritten_r/</code> for the
 translated analysis.</li>
 </ul></li>
@@ -441,8 +454,7 @@ translated analysis.</li>
 <ul>
 <li>Compare outputs such as regression coefficients (betas and alphas),
 summary statistics, and visualizations saved in the
-<code>outputs/</code> folder.<br />
-</li>
+<code>outputs/</code> folder.</li>
 <li>Results between Python and R implementations should be closely
 aligned, demonstrating reproducibility.</li>
 </ul></li>
@@ -454,25 +466,21 @@ opening an issue in this repository for efficient troubleshooting.</li>
 </ol>
 <hr />
 </div>
-</div>
-<div id="additional-notes" class="section level2">
-<h2>📚 Additional Notes</h2>
+<div id="additional-notes" class="section level4">
+<h4>📚 Additional Notes</h4>
 <ul>
 <li>The Python code uses <code>pandas</code> for data handling,
 <code>statsmodels</code> for regression, and <code>seaborn</code> for
-plotting.<br />
-</li>
+plotting.</li>
 <li>The R version leverages <code>tidyverse</code> for data wrangling,
 <code>lm()</code> for regression modeling, and <code>ggplot2</code> for
-visualization.<br />
-</li>
+visualization.</li>
 <li>Both implementations aim to deliver equivalent CAPM analysis results
-and insights.<br />
-</li>
+and insights.</li>
 <li>The cleaned dataset includes daily returns prepared for regression,
 ensuring comparability.</li>
 </ul>
-<hr />
+</div>
 </div>
 
 
