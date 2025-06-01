@@ -9,8 +9,8 @@
 <link href="CAPM Presentation_files/libs/quarto-html/quarto-syntax-highlighting-dark-c8b544e1eab81f7563542c0a8b71d1e9.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.7.28">
 
-  <meta name="author" content="Team: Chen, Edwell, Praise">
-  <title>Capital Asset Pricing Model Presentation</title>
+  <meta name="author" content="Edwell B Mandebvu">
+  <title>CAPM Model: R vs Python</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -30,7 +30,6 @@
     }
   </style>
   <link rel="stylesheet" href="CAPM Presentation_files/libs/revealjs/dist/theme/quarto-091ebfb71d12db7fc524ec91495e1509.css">
-  <link rel="stylesheet" href="styles.css">
   <link href="CAPM Presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="CAPM Presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="CAPM Presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -128,59 +127,141 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Capital Asset Pricing Model Presentation</h1>
+  <h1 class="title">CAPM Model: R vs Python</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Team: Chen, Edwell, Praise 
+Edwell B Mandebvu 
 </div>
 </div>
 </div>
 
 </section>
-<section id="comparison-of-capm-implementation-r-quarto-vs-python-jupyter-notebook" class="slide level2">
-<h2><strong>Comparison of CAPM Implementation: R (Quarto) vs Python (Jupyter Notebook)</strong></h2>
-<p>This document summarizes key improvements made in the R-based Quarto implementation of the CAPM analysis compared to the original Python-based Jupyter Notebook version. While both environments are capable of performing the same financial computations, several practical and presentation-focused enhancements were noted in the R version:</p>
+<section id="capm-implementation-comparison" class="slide level2">
+<h2>🧮 CAPM Implementation Comparison</h2>
+<p><strong>R (Quarto) vs Python (Jupyter)</strong><br>
+## 🧪 Reproducibility &amp; Financial Clarity</p>
+<h3 id="objective">📊 Objective</h3>
+<p>Reproduce a Python-based CAPM model in R using Quarto, and compare outputs, structure, and clarity.</p>
 </section>
-<section id="clear-explanations-for-each-stage" class="slide level2">
-<h2><strong>Clear Explanations for Each Stage</strong></h2>
-<p><strong>Improvement:</strong></p>
-<p>Each analysis step in the Quarto document includes a clear explanation of what is being done, why it is relevant to CAPM, and how it connects to the broader objective.</p>
-<p><strong>Python Limitation:</strong></p>
-<p>The Jupyter Notebook mostly presents code and output without accompanying narrative, leaving interpretation to the reader.</p>
+<section class="slide level2">
+
+<h3 id="reproducibility">🔁 Reproducibility</h3>
+<p>The R version improves reproducibility through: - Clean folder and code organization<br>
+- Automatable Quarto rendering<br>
+- Easy re-runs with minimal setup</p>
+<h3 id="methodology">📚 Methodology</h3>
+<ul>
+<li class="fragment">The R document is divided into 9 well-labeled stages<br>
+</li>
+<li class="fragment">Each step explains <em>what</em>, <em>why</em>, and <em>how</em><br>
+</li>
+<li class="fragment">The Python version lacks guiding narrative — mostly code and output</li>
+</ul>
 </section>
-<section id="interpretation-of-results" class="slide level2">
-<h2><strong>Interpretation of Results</strong></h2>
-<p><strong>Improvement:</strong> Key statistics such as beta, alpha, R-squared, and CAPM expected returns are accompanied by interpretations that explain their significance in financial terms.</p>
-<p><strong>Python Limitation:</strong> Numerical outputs are presented without contextual explanations or financial insights.</p>
+<section class="slide level2">
+
+<h3 id="financial-insight">💡 Financial Insight</h3>
+<ul>
+<li class="fragment">The R version adds interpretations for beta, alpha, and R², Python Doesn’t.<br>
+</li>
+<li class="fragment">Includes portfolio-level return calculations<br>
+</li>
+<li class="fragment">Adds practical meaning for analysts and investors<br>
+<br>
+</li>
+</ul>
 </section>
-<section id="structured-workflow" class="slide level2">
-<h2><strong>Structured Workflow</strong></h2>
-<p><strong>Improvement:</strong> The R version is structured into clearly defined stages (e.g., Stage 1 to Stage 9), providing a logical, easy-to-follow workflow.</p>
-<p><strong>Python Limitation:</strong> The analysis in Python is fragmented with no consistent organization, making the analytical flow harder to follow.</p>
+<section id="why-this-matters" class="slide level2">
+<h2>🧠 Why This Matters</h2>
+<ul>
+<li class="fragment">Reproducing CAPM across platforms tests <strong>model robustness</strong><br>
+</li>
+<li class="fragment">R/Quarto offers <strong>structured</strong>, interpretable reporting<br>
+</li>
+<li class="fragment">Python/Jupyter is more <strong>exploratory</strong> and code-focused</li>
+</ul>
 </section>
-<section id="enhanced-readability-and-presentation" class="slide level2">
-<h2><strong>Enhanced Readability and Presentation</strong></h2>
-<p><strong>Improvement:</strong> R code is modular and visually clean, with consistently labeled plots and summaries that enhance readability.</p>
-<p><strong>Python Limitation:</strong> Visual outputs are not consistently formatted or labeled for interpretability.</p>
+<section id="workflow-structure" class="slide level2">
+<h2>📊 Workflow Structure</h2>
+<p><strong>R (Quarto):</strong> - Clear, staged analysis (Stage 1 → Stage 9)<br>
+- Narrative + code + output = coherent story</p>
+<p><strong>Python:</strong> - Fragmented cells with little context<br>
+- Reader must interpret everything on their own</p>
 </section>
-<section id="portfolio-level-analysis-added" class="slide level2">
-<h2><strong>Portfolio-Level Analysis Added</strong></h2>
-<p><strong>Improvement:</strong> The Quarto document calculates portfolio-level expected returns using CAPM, adding practical relevance for investors.</p>
-<p><strong>Python Limitation:</strong> The Jupyter Notebook focuses solely on individual stock analysis without aggregating results for a portfolio.</p>
+<section id="output-interpretation" class="slide level2">
+<h2>🧾 Output Interpretation</h2>
+<p><strong>R (Quarto):</strong> - Each statistic (Beta, Alpha, R²) is explained<br>
+- Emphasis on financial meaning</p>
+<p><strong>Python:</strong> - Raw numbers presented without interpretation</p>
+<div class="quarto-figure quarto-figure-right">
+<figure>
+<p><img data-src="images/clipboard-119599749.png" class="quarto-figure quarto-figure-right" width="552"></p>
+</figure>
+</div>
+<p><img data-src="images/clipboard-1599132061.png" width="589"></p>
 </section>
-<section id="model-validation-and-statistical-diagnostics" class="slide level2">
-<h2><strong>Model Validation and Statistical Diagnostics</strong></h2>
-<p><strong>Improvement:</strong> The final stage in the R implementation includes comprehensive validation metrics for all stock models, including t-values, p-values, and R-squared values.</p>
-<p><strong>Python Limitation:</strong> Diagnostic metrics are limited or absent, offering no assessment of model fit or reliability.</p>
+<section id="visuals-layout" class="slide level2">
+<h2>📈 Visuals &amp; Layout</h2>
+<p><strong>R:</strong> - Consistently labeled plots<br>
+- Clean tables using <code>kableExtra</code></p>
+<p><strong>Python:</strong> - Plots exist, but lack formatting and clarity</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 54%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>R</th>
+<th>Python</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><img data-src="images/clipboard-3873365033.png" width="616"></td>
+<td><img data-src="images/clipboard-3280750730.png" width="616"></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="reference" class="slide level2">
-<h2>Reference:</h2>
-<p><br>
-<strong>Original project:</strong> <a href="https://www.kaggle.com/code/gauravduttakiit/capital-asset-pricing-model/notebook" class="uri">https://www.kaggle.com/code/gauravduttakiit/capital-asset-pricing-model/notebook</a></p>
-<p><strong>Sharpe, W. F. (1964).</strong> Capital asset prices: A theory of market equilibrium under conditions of risk. <em>The Journal of Finance, 19</em>(3), 425–442. https://doi.org/10.2307/2977928</p>
-<p><strong>Bodie, Z., Kane, A., &amp; Marcus, A. J. (2019).</strong> <em>Investments</em> (11th ed.). McGraw-Hill Education.</p>
+<section id="model-diagnostics" class="slide level2">
+<h2>✅ Model Diagnostics</h2>
+<p><strong>R adds:</strong> - p-values<br>
+- t-values<br>
+- R²<br>
+- Residual plots</p>
+<p><strong>Python:</strong> - No model validation included</p>
+</section>
+<section id="conclusion" class="slide level2">
+<h2>Conclusion:</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Python</th>
+<th>R</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><img data-src="images/clipboard-3925373265.png" width="351"></td>
+<td><img data-src="images/clipboard-949994398.png" width="355"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="references" class="slide level2">
+<h2>📚 References</h2>
+<p><strong>Original Python project:</strong><br>
+<a href="https://www.kaggle.com/code/gauravduttakiit/capital-asset-pricing-model/notebook">Kaggle CAPM Notebook</a></p>
+<p><strong>Sharpe, W. F. (1964).</strong><br>
+<em>Capital asset prices: A theory of market equilibrium under conditions of risk.</em><br>
+<em>The Journal of Finance, 19</em>(3), 425–442</p>
 
 </section>
     </div>
@@ -211,7 +292,7 @@ Team: Chen, Edwell, Praise
       // Full list of configuration options available at:
       // https://revealjs.com/config/
       Reveal.initialize({
-'controlsAuto': true,
+'controlsAuto': false,
 'previewLinksAuto': false,
 'pdfSeparateFragments': false,
 'autoAnimateEasing': "ease",
@@ -222,7 +303,7 @@ Team: Chen, Edwell, Praise
 'smaller': true,
  
         // Display controls in the bottom right corner
-        controls: false,
+        controls: true,
 
         // Help the user learn the controls by providing hints, for example by
         // bouncing the down arrow when they first encounter a vertical slide
