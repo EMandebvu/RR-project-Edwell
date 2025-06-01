@@ -1,37 +1,40 @@
 ---
-title: "Capital Asset Pricing Model"
-author: "Team: Chen, Edwell, Praise"
+title: "Capital Asset Pricing Model (CAPM) Analysis"
+subtitle: "From Python to R: A Reproducible Workflow"
+author: "Edwell B Mandebvu"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 format: 
   html:
     toc: true          
     toc-depth: 3       
+    code-fold: true     ## ADD --> Allows collapsing code chunks
     warning: false
     error: false
-    message: false
+    code-tools: true    ## ADD --> Adds copy/paste buttons for code
 editor: visual
 ---
 
 ## Stage 1: Load data
 
-This section loads the necessary R packages—**`plotly`** for interactive plots, **`tidyverse`**, **`ggplot2`** for data manipulation and visualization and **`readr`** for data reading.
+Load the necessary R packages—**`plotly`** for interactive plots, **`tidyverse`**, **`ggplot2`** for data manipulation and visualization and **`readr`** for data reading.
 
 ```{r}
-suppressPackageStartupMessages(library(plotly))
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(ggplot2))
-suppressPackageStartupMessages(library(readr))
-```
 
-Reading the CSV data file
+#data-loading
+# Load packages quietly
+suppressPackageStartupMessages({
+  library(plotly)
+  library(tidyverse)
+  library(ggplot2)
+  library(readr)
+  library(here)  ## ADD --> For path management
+})
 
-```{r}
-df <- read_csv("M:/UW QF/Sem 2/Reproducible Research/New folder/cleaned_data.csv", show_col_types = FALSE )
+# Read data using relative paths
+data_path <- here("data", "cleaned_data.csv")  ## Ensures portability
+if (!file.exists(data_path)) stop("Data file not found. Check 'data/' directory.")
 
-```
-
-A quick look at the first few rows is performed to verify the structure and contents of the dataset.(Ri is AAPL, Rm is market return(s&p 500)
-
-```{r}
+df <- read_csv(data_path, show_col_types = FALSE)  
 head(df)
 ```
 
@@ -60,7 +63,7 @@ head(cumulative_df)
 
 ## Stage 3: Interactive plot of cumulative stock performance
 
-An interactive line chart is generated using Plotly, visualizing the cumulative returns of selected stocks and the market over time. Each line represents a different asset, indexed to a starting value of 100.
+Line chart is generated using Plotly, visualizing the cumulative returns of selected stocks and the market over time. Each line represents a different asset, indexed to a starting value of 100.
 
 ```{r}
 interactive_plot <- function(df, title) {
@@ -90,7 +93,7 @@ interactive_plot(cumulative_df, "Stock Performance Indexed to 100")
 
 ## Stage 4: Average daily returns
 
-The mean daily return is calculated for each stock and the market, summarizing the average performance over the observed period.
+Mean daily return is calculated for each stock and the market, summarizing the average performance over the observed period.
 
 ```{r}
 avg_daily_returns <- df %>%
@@ -103,20 +106,20 @@ print(avg_daily_returns)
 
 ## Stage 5: Plot - Single Stock (AAPL) vs Market Returns
 
-A scatter plot is created to visualize the relationship between daily returns of a single stock Ri (AAPL) and the overall market returns (S&P 500).
-
-CAPM assumes a linear relationship between an individual stock’s returns and market returns. This plot visually inspects that relationship, helping to assess if the stock’s returns move consistently with the market as CAPM suggests.
-
 ```{r}
-ggplot(df, aes(x = Rm, y = Ri)) +
-  geom_point(color = "darkgreen") +
-  labs(
-    title = "Ri (AAPL) vs Rm(Market Returns)",
-    x = "Rm",
-    y = "Ri"
-  ) +
-  theme_minimal()
+## Stage 5: Plot - Single Stock (AAPL) vs Market Returns
 
+ggplot(df, aes(x = Rm, y = Ri)) +
+  geom_point(color = "darkgreen", alpha = 0.6) +  ## ADD --> Transparency
+  labs(
+    title = "AAPL vs S&P 500 Daily Returns (Raw Values)",
+    subtitle = "Each point represents a trading day",  ## ADD --> Context
+    x = "Market Return (S&P 500)",
+    y = "AAPL Return",
+    caption = "Source: Kaggle dataset |"  ## ADD --> Attribution
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))  ## ADD --> Styling
 ```
 
 ## Stage 6: Linear regression and regression plot
@@ -129,7 +132,7 @@ A linear regression model is fitted to quantify the relationship between Ri's (A
 
 A scatter plot with the regression line is also produced to visually confirm this relationship.
 
-Beta is a fundamental parameter in CAPM, indicating the stock’s systematic risk relative to the market. Alpha helps identify any abnormal returns beyond what CAPM predicts. This step formally quantifies the core assumptions of CAPM by fitting the expected linear relation.
+Beta is a fundamental parameter in CAPM, indicating the stock’s systematic risk relative to the market. Alpha helps identify any abnormal returns beyond what CAPM predicts.
 
 **Apple is used in this case because of its market influence, and relatively stable return trends.** As one of the largest and most closely watched companies, Apple often reflects the broader behavior of big tech stocks. Applying CAPM to Apple first provides a clean and intuitive illustration of the regression process and its visual interpretation. This serves as a practical baseline before applying the same procedure to other stocks in the portfolio.
 
@@ -231,10 +234,10 @@ print(results)
 ```
 
 **Beta (Volatility vs Market):**\
-Beta values highlight how sensitive each stock is to movements in the overall market. Stocks like *TSLA* and *MGM* show high beta, indicating they tend to move more sharply in response to market changes—making them more volatile and risk-prone. In contrast, stocks such as *T* and *IBM* have lower beta values, suggesting more stable price movements with less responsiveness to market fluctuations.
+*TSLA* and *MGM* show high beta, indicating they tend to move more sharply in response to market changes, making them more volatile and risk-prone. In contrast, *T* and *IBM* have lower beta values, suggesting more stable price movements with less responsiveness to market fluctuations.
 
 **Alpha (Excess Return vs Market):**\
-Alpha measures the portion of a stock’s return that exceeds what would be expected based on its market exposure. Positive alpha values, seen in *AMZN*, *GOOG*, *TSLA*, and *AAPL*, suggest these stocks consistently outperformed the market beyond what CAPM predicts. Negative alphas in stocks like *T*, *MGM*, and *IBM* indicate underperformance, where returns fell short of their risk-adjusted expectations.
+Positive alpha values, seen in *AMZN*, *GOOG*, *TSLA*, and *AAPL*, suggest these stocks consistently outperformed the market beyond what CAPM predicts. Negative alphas in *T*, *MGM*, and *IBM* indicate underperformance, where returns fell short of their risk-adjusted expectations.
 
 ## Stage 8: Portfolio expected returns based on CAPM
 
@@ -320,9 +323,9 @@ print(validation_stats)
 
 **Validation Summary of CAPM Models**
 
-The validation statistics offer insight into how well the CAPM explains each stock's return in relation to the market. Across the board, **p-values are effectively zero**, confirming that the relationship between market returns and individual stock returns is statistically significant.
+**P-values are effectively zero**, confirming that the relationship between market returns and individual stock returns is statistically significant.
 
-**Beta estimates** are all positive and statistically robust, indicating each stock exhibits some level of market-related behavior. However, **R-squared values vary** substantially—ranging from *\~15% (TSLA)* to nearly *50% (IBM)*—indicating differing levels of explanatory power. Stocks like *IBM*, *GOOG*, and *BA* show relatively **high R-squared values**, meaning a substantial portion of their return variation is explained by the market. In contrast, *TSLA* shows a **low R-squared**, suggesting that a significant share of its performance is driven by idiosyncratic, non-market factors.
+**Beta estimates** are all positive and statistically robust, indicating each stock exhibits some level of market-related behavior. However, **R-squared values vary** substantially, ranging from *\~15% (TSLA)* to nearly *50% (IBM)*, indicating differing levels of explanatory power. Stocks like *IBM*, *GOOG*, and *BA* show relatively **high R-squared values**, meaning a substantial portion of their return variation is explained by the market. In contrast, *TSLA* shows a **low R-squared**, suggesting that a significant share of its performance is driven by idiosyncratic, non-market factors.
 
 **Standard errors** for beta estimates are generally low, supporting the reliability of the beta values. **T-values are high** for all stocks, reinforcing the strength of the linear relationship.
 
