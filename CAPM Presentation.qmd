@@ -16,6 +16,13 @@ format:
 
 ## 🧮 CAPM Implementation Comparison
 
+CAPM - A financial model that helps us estimate how much return an investor should expect from a stock, based on how risky that stock is compared to the overall market.
+
+It basically says: the more risk you take, the more return you should get.
+
+Formula:\
+![](images/clipboard-4254825832.png)
+
 **R (Quarto) vs Python (Jupyter)**\
 \## 🧪 Reproducibility & Financial Clarity
 
@@ -23,19 +30,19 @@ format:
 
 Reproduce a Python-based CAPM model in R using Quarto, and compare outputs, structure, and clarity.
 
-------------------------------------------------------------------------
-
-### 🔁 Reproducibility
+## 🔁 Reproducibility
 
 The R version improves reproducibility through: - Clean folder and code organization\
 - Automatable Quarto rendering\
 - Easy re-runs with minimal setup
 
-### 📚 Methodology
+## 📊 Workflow Structure
 
--   The R document is divided into 9 well-labeled stages\
--   Each step explains *what*, *why*, and *how*\
--   The Python version lacks guiding narrative — mostly code and output
+**R (Quarto):** - Clear, staged analysis (Stage 1 → Stage 9)\
+- Code - output - explanation = coherent story
+
+**Python:** - Fragmented cells with little context\
+- Reader must interpret everything on their own
 
 ------------------------------------------------------------------------
 
@@ -43,8 +50,7 @@ The R version improves reproducibility through: - Clean folder and code organiza
 
 -   The R version adds interpretations for beta, alpha, and R², Python Doesn't.\
 -   Includes portfolio-level return calculations\
--   Adds practical meaning for analysts and investors\
-    \
+-   Adds practical meaning
 
 ------------------------------------------------------------------------
 
@@ -54,16 +60,6 @@ The R version improves reproducibility through: - Clean folder and code organiza
 -   R/Quarto offers **structured**, interpretable reporting\
 -   Python/Jupyter is more **exploratory** and code-focused
 
-## 📊 Workflow Structure
-
-**R (Quarto):** - Clear, staged analysis (Stage 1 → Stage 9)\
-- Narrative + code + output = coherent story
-
-**Python:** - Fragmented cells with little context\
-- Reader must interpret everything on their own
-
-------------------------------------------------------------------------
-
 ## 🧾 Output Interpretation
 
 **R (Quarto):** - Each statistic (Beta, Alpha, R²) is explained\
@@ -71,9 +67,9 @@ The R version improves reproducibility through: - Clean folder and code organiza
 
 **Python:** - Raw numbers presented without interpretation
 
-![](images/clipboard-119599749.png){fig-align="right" width="552"}
-
-![](images/clipboard-1599132061.png){width="589"}
+| Validation                           | Coefficients & Expected Return      |
+|--------------------------------------|-------------------------------------|
+| ![](images/clipboard-1599132061.png) | ![](images/clipboard-119599749.png) |
 
 ------------------------------------------------------------------------
 
@@ -85,7 +81,7 @@ The R version improves reproducibility through: - Clean folder and code organiza
 **Python:** - Plots exist, but lack formatting and clarity
 
 | R | Python |
-|---------------------------------------------|--------------------------------------|
+|---------------------------------------|---------------------------------|
 | ![](images/clipboard-3873365033.png){width="616"} | ![](images/clipboard-3280750730.png){width="616"} |
 
 ------------------------------------------------------------------------

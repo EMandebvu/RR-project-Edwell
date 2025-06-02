@@ -140,25 +140,27 @@ Edwell B Mandebvu
 </section>
 <section id="capm-implementation-comparison" class="slide level2">
 <h2>🧮 CAPM Implementation Comparison</h2>
+<p>CAPM - A financial model that helps us estimate how much return an investor should expect from a stock, based on how risky that stock is compared to the overall market.</p>
+<p>It basically says: the more risk you take, the more return you should get.</p>
+<p>Formula:<br>
+<img data-src="images/clipboard-4254825832.png"></p>
 <p><strong>R (Quarto) vs Python (Jupyter)</strong><br>
 ## 🧪 Reproducibility &amp; Financial Clarity</p>
 <h3 id="objective">📊 Objective</h3>
 <p>Reproduce a Python-based CAPM model in R using Quarto, and compare outputs, structure, and clarity.</p>
 </section>
-<section class="slide level2">
-
-<h3 id="reproducibility">🔁 Reproducibility</h3>
+<section id="reproducibility" class="slide level2">
+<h2>🔁 Reproducibility</h2>
 <p>The R version improves reproducibility through: - Clean folder and code organization<br>
 - Automatable Quarto rendering<br>
 - Easy re-runs with minimal setup</p>
-<h3 id="methodology">📚 Methodology</h3>
-<ul>
-<li class="fragment">The R document is divided into 9 well-labeled stages<br>
-</li>
-<li class="fragment">Each step explains <em>what</em>, <em>why</em>, and <em>how</em><br>
-</li>
-<li class="fragment">The Python version lacks guiding narrative — mostly code and output</li>
-</ul>
+</section>
+<section id="workflow-structure" class="slide level2">
+<h2>📊 Workflow Structure</h2>
+<p><strong>R (Quarto):</strong> - Clear, staged analysis (Stage 1 → Stage 9)<br>
+- Code - output - explanation = coherent story</p>
+<p><strong>Python:</strong> - Fragmented cells with little context<br>
+- Reader must interpret everything on their own</p>
 </section>
 <section class="slide level2">
 
@@ -168,9 +170,7 @@ Edwell B Mandebvu
 </li>
 <li class="fragment">Includes portfolio-level return calculations<br>
 </li>
-<li class="fragment">Adds practical meaning for analysts and investors<br>
-<br>
-</li>
+<li class="fragment">Adds practical meaning</li>
 </ul>
 </section>
 <section id="why-this-matters" class="slide level2">
@@ -183,24 +183,29 @@ Edwell B Mandebvu
 <li class="fragment">Python/Jupyter is more <strong>exploratory</strong> and code-focused</li>
 </ul>
 </section>
-<section id="workflow-structure" class="slide level2">
-<h2>📊 Workflow Structure</h2>
-<p><strong>R (Quarto):</strong> - Clear, staged analysis (Stage 1 → Stage 9)<br>
-- Narrative + code + output = coherent story</p>
-<p><strong>Python:</strong> - Fragmented cells with little context<br>
-- Reader must interpret everything on their own</p>
-</section>
 <section id="output-interpretation" class="slide level2">
 <h2>🧾 Output Interpretation</h2>
 <p><strong>R (Quarto):</strong> - Each statistic (Beta, Alpha, R²) is explained<br>
 - Emphasis on financial meaning</p>
 <p><strong>Python:</strong> - Raw numbers presented without interpretation</p>
-<div class="quarto-figure quarto-figure-right">
-<figure>
-<p><img data-src="images/clipboard-119599749.png" class="quarto-figure quarto-figure-right" width="552"></p>
-</figure>
-</div>
-<p><img data-src="images/clipboard-1599132061.png" width="589"></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 49%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Validation</th>
+<th>Coefficients &amp; Expected Return</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><img data-src="images/clipboard-1599132061.png"></td>
+<td><img data-src="images/clipboard-119599749.png"></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="visuals-layout" class="slide level2">
 <h2>📈 Visuals &amp; Layout</h2>
