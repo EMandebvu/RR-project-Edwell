@@ -81,10 +81,31 @@ To ensure the reproducibility of our CAPM implementation, please follow these st
 
 ------------------------------------------------------------------------
 
-#### 📚 Additional Notes
+#### Software Versions Used
+R (CRAN): 4.5.0 (2025-04-11), "How About a Twenty-Six"
+
+RStudio: 2025.05.1+513 (Released 2025-06-05)
+
+------------------------------------------------------------------------
+
+
+#### Additional Notes
 
 -   The Python code uses `pandas` for data handling, `statsmodels` for regression, and `seaborn` for plotting.
 -   The R version leverages `tidyverse` for data wrangling, `lm()` for regression modeling, and `ggplot2` for visualization.
 -   Both implementations aim to deliver equivalent CAPM analysis results and insights.
 -   The cleaned dataset includes daily returns prepared for regression, ensuring comparability.
 -   For comparison of results, refer to the QMD presentation (CAPM presentation).
+
+------------------------------------------------------------------------
+
+
+#### Observations
+
+Both implementations produced consistent alpha and beta estimates with slight rounding differences, confirming the accuracy of the translation.
+
+R's ggplot2 provided more flexible and aesthetically pleasing visualizations.
+
+Python’s pandas felt slightly more intuitive for initial data manipulation, but R's dplyr offered strong alternatives.
+
+Model diagnostics were easier in R using built-in summary functions and broom package.

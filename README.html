@@ -466,8 +466,14 @@ opening an issue in this repository for efficient troubleshooting.</li>
 </ol>
 <hr />
 </div>
+<div id="software-versions-used" class="section level4">
+<h4>Software Versions Used</h4>
+<p>R (CRAN): 4.5.0 (2025-04-11), “How About a Twenty-Six”</p>
+<p>RStudio: 2025.05.1+513 (Released 2025-06-05)</p>
+<hr />
+</div>
 <div id="additional-notes" class="section level4">
-<h4>📚 Additional Notes</h4>
+<h4>Additional Notes</h4>
 <ul>
 <li>The Python code uses <code>pandas</code> for data handling,
 <code>statsmodels</code> for regression, and <code>seaborn</code> for
@@ -479,7 +485,22 @@ visualization.</li>
 and insights.</li>
 <li>The cleaned dataset includes daily returns prepared for regression,
 ensuring comparability.</li>
+<li>For comparison of results, refer to the QMD presentation (CAPM
+presentation).</li>
 </ul>
+<hr />
+</div>
+<div id="observations" class="section level4">
+<h4>Observations</h4>
+<p>Both implementations produced consistent alpha and beta estimates
+with slight rounding differences, confirming the accuracy of the
+translation.</p>
+<p>R’s ggplot2 provided more flexible and aesthetically pleasing
+visualizations.</p>
+<p>Python’s pandas felt slightly more intuitive for initial data
+manipulation, but R’s dplyr offered strong alternatives.</p>
+<p>Model diagnostics were easier in R using built-in summary functions
+and broom package.</p>
 </div>
 </div>
 
